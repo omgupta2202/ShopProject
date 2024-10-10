@@ -1,0 +1,22 @@
+{% extends 'Shops/base.html' %}
+
+{% block content %}
+  <h2 class="mb-4">Search Results</h2>
+
+  {% if shops %}
+    <ul class="list-group">
+      {% for item in shops %}
+        <li class="list-group-item">
+          <strong>{{ item.shop.name }}</strong><br>
+          Distance: {{ item.distance|floatformat:2 }} km<br>
+          Address: {{ item.shop.address }}<br>
+          Owner: {{ item.shop.owner_name }}<br>
+          Phone: {{ item.shop.phone_number }}<br>
+          Email: {{ item.shop.email }}<br>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No shops found.</p>
+  {% endif %}
+{% endblock %}

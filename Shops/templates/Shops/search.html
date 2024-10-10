@@ -1,0 +1,21 @@
+{% extends 'Shops/base.html' %}
+
+{% block content %}
+  <h2 class="mb-4">Search for Shops</h2>
+
+  <form method="GET" action="{% url 'shop-search' %}" class="needs-validation" novalidate>
+    <div class="form-group">
+      <label for="latitude">Your Latitude</label>
+      <input type="number" step="any" class="form-control" id="latitude" name="latitude" required>
+      <div class="invalid-feedback">Please enter a valid latitude.</div>
+    </div>
+
+    <div class="form-group">
+      <label for="longitude">Your Longitude</label>
+      <input type="number" step="any" class="form-control" id="longitude" name="longitude" required>
+      <div class="invalid-feedback">Please enter a valid longitude.</div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Search</button>
+  </form>
+{% endblock %}

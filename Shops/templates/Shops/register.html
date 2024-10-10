@@ -1,0 +1,134 @@
+{% extends 'Shops/base.html' %}
+
+{% block content %}
+  <h2 class="mb-4">Register Shop</h2>
+
+  {% if errors %}
+    <div class="alert alert-danger">
+      <ul>
+        {% for error in errors %}
+          <li>{{ error }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+
+  <form method="POST" class="needs-validation" novalidate>
+    {% csrf_token %}
+
+    <div class="form-group">
+      <label for="name">Shop Name</label>
+      <input type="text" class="form-control" id="name" name="name" value="{{ values.name }}" maxlength="100" required>
+      <div class="invalid-feedback">Please enter a valid shop name (max 100 characters).</div>
+    </div>
+
+    <div class="form-group">
+      <label for="address">Address</label>
+      <input type="text" class="form-control" id="address" name="address" value="{{ values.address }}" maxlength="255" required>
+      <div class="invalid-feedback">Please enter a valid address (max 255 characters).</div>
+    </div>
+
+    <div class="form-group">
+      <label for="owner_name">Owner Name</label>
+      <input type="text" class="form-control" id="owner_name" name="owner_name" value="{{ values.owner_name }}" maxlength="100" required>
+      <div class="invalid-feedback">Please enter a valid owner name (max 100 characters).</div>
+    </div>
+
+    <div class="form-group">
+      <label for="phone_number">Phone Number</label>
+      <input type="text" class="form-control" id="phone_number" name="phone_number" value="{{ values.phone_number }}" maxlength="15" required>
+      <div class="invalid-feedback">Please enter a valid phone number (max 15 digits).</div>
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" class="form-control" id="email" name="email" value="{{ values.email }}" required>
+      <div class="invalid-feedback">Please enter a valid email address.</div>
+    </div>
+
+    <div class="form-group">
+      <label for="latitude">Latitude</label>
+      <input type="number" step="any" class="form-control" id="latitude" name="latitude" value="{{ values.latitude }}" required>
+      <div class="invalid-feedback">Please enter a valid latitude between -90 and 90.</div>
+    </div>
+
+    <div class="form-group">
+      <label for="longitude">Longitude</label>
+      <input type="number" step="any" class="form-control" id="longitude" name="longitude" value="{{ values.longitude }}" required>
+      <div class="invalid-feedback">Please enter a valid longitude between -180 and 180.</div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Register</button>
+  </form>
+
+  <script>
+    document.getElementById('shop_name').addEventListener('blur', function() {
+        var shop_name = this.value;
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', '/shops/check-shop-name/?shop_name=' + shop_name, true);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                if (xhr.responseText === 'taken') {
+                    document.getElementById('shop_name_feedback').textContent = 'Shop name already taken.';
+                    document.getElementById('shop_name').classList.add('is-invalid');
+                } else {
+                    document.getElementById('shop_name_feedback').textContent = '';
+                    document.getElementById('shop_name').classList.remove('is-invalid');
+                }
+            }
+        };
+        xhr.send();
+    });
+
+    // Latitude and Longitude validation
+    function validateLatLong() {
+        var latitude = document.getElementById('latitude').value;
+        var longitude = document.getElementById('longitude').value;
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', `/shops/check-lat-long/?latitude=${latitude}&longitude=${longitude}`, true);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                if (xhr.responseText === 'invalid_lat') {
+                    document.getElementById('latitude_feedback').textContent = 'Invalid latitude. Must be between -90 and 90.';
+                    document.getElementById('latitude').classList.add('is-invalid');
+                } else {
+                    document.getElementById('latitude_feedback').textContent = '';
+                    document.getElementById('latitude').classList.remove('is-invalid');
+                }
+
+                if (xhr.responseText === 'invalid_long') {
+                    document.getElementById('longitude_feedback').textContent = 'Invalid longitude. Must be between -180 and 180.';
+                    document.getElementById('longitude').classList.add('is-invalid');
+                } else {
+                    document.getElementById('longitude_feedback').textContent = '';
+                    document.getElementById('longitude').classList.remove('is-invalid');
+                }
+            }
+        };
+        xhr.send();
+    }
+
+    document.getElementById('latitude').addEventListener('blur', validateLatLong);
+    document.getElementById('longitude').addEventListener('blur', validateLatLong);
+
+    // Form submission validation for password, shop name, etc.
+    function validateRegistrationForm() {
+        var password1 = document.getElementById('password1').value;
+        var password2 = document.getElementById('password2').value;
+        var strongPasswordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+        if (!strongPasswordPattern.test(password1)) {
+            alert("Password must contain at least 8 characters, including an uppercase letter, a lowercase letter, a number, and a special character.");
+            return false;
+        }
+
+        if (password1 !== password2) {
+            alert("Passwords do not match.");
+            return false;
+        }
+
+        return true;
+    }
+  </script>
+{% endblock %}

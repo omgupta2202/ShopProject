@@ -1,0 +1,40 @@
+<!-- shops/templates/shops/shop_list.html -->
+
+{% extends 'Shops/base.html' %}
+
+{% block content %}
+  <h2 class="mb-4">Shop List</h2>
+
+  {% if shops %}
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Owner</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>Address</th>
+            <th>Latitude</th>
+            <th>Longitude</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for shop in shops %}
+            <tr>
+              <td>{{ shop.name }}</td>
+              <td>{{ shop.owner_name }}</td>
+              <td>{{ shop.phone_number }}</td>
+              <td>{{ shop.email }}</td>
+              <td>{{ shop.address }}</td>
+              <td>{{ shop.latitude }}</td>
+              <td>{{ shop.longitude }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p>No shops registered yet.</p>
+  {% endif %}
+{% endblock %}
